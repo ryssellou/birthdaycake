@@ -349,14 +349,38 @@
   filter: brightness(1.1);
 }
 
+.force-blow-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--pink-primary);
+  border: 2px solid var(--pink-primary);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  z-index: 50;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  backdrop-filter: blur(5px);
+}
+
+.force-blow-btn:hover {
+  background: var(--pink-primary);
+  color: white;
+  transform: scale(1.05);
+}
+
 @media (max-width: 600px) {
   .title {
     font-size: 2.2rem;
   }
 
   .camera-frame {
-    height: 350px;
-    border-width: 8px;
+    border-width: 6px;
+    width: 96%;
   }
 
   .cake {

@@ -20,6 +20,7 @@ const App = () => {
   const [isAlmostPouting, setIsAlmostPouting] = useState(false);
   const [debugInfo, setDebugInfo] = useState({ ratio: 'Scanning...', sound: 0, heartbeat: 0 });
   const [isStarted, setIsStarted] = useState(false);
+  const [showManualBtn, setShowManualBtn] = useState(false);
 
   const videoRef = useRef(null);
   const containerRef = useRef(null);
@@ -82,6 +83,9 @@ const App = () => {
       const audio = new Audio('/birthday_song.mp3');
       audio.loop = true;
       audio.play().catch(e => console.error("Audio autoplay blocked or failed:", e));
+
+      // Show manual blow button after 15 seconds
+      setTimeout(() => setShowManualBtn(true), 15000);
     } catch (err) {
       alert('Camera and Mic access required!');
     }
@@ -190,23 +194,27 @@ const App = () => {
   };
 
   const captureScreenshot = async () => {
-    if (!cameraFrameRef.current) return;
+    if (!containerRef.current) return;
 
     try {
-      const canvas = await html2canvas(cameraFrameRef.current, {
+      const canvas = await html2canvas(containerRef.current, {
         useCORS: true,
         scale: 2,
-        backgroundColor: '#000',
+        backgroundColor: null,
         onclone: (clonedDoc) => {
-          // Hide instructions and overlays in the photo
-          const overlay = clonedDoc.querySelector('.overlay-status');
-          if (overlay) overlay.style.display = 'none';
+          // Hide modal in screenshot
+          const modal = clonedDoc.querySelector('.modal-backdrop');
+          if (modal) modal.style.display = 'none';
 
-          const startOverlay = clonedDoc.querySelector('.start-overlay');
-          if (startOverlay) startOverlay.style.display = 'none';
-
+          // Hide UI buttons/indicators in photo
           const forceBtn = clonedDoc.querySelector('.force-blow-btn');
           if (forceBtn) forceBtn.style.display = 'none';
+
+          const status = clonedDoc.querySelector('.overlay-status');
+          if (status) status.style.display = 'none';
+
+          const sparkles = clonedDoc.querySelectorAll('.party-sparkle');
+          sparkles.forEach(s => s.style.display = 'none');
         }
       });
 
@@ -288,9 +296,9 @@ const App = () => {
           </div>
         </div>
 
-        {!isBlown && isStarted && (
-          <button className="force-blow-btn" onClick={triggerSequence} style={{ opacity: 0.7 }}>
-            Manual Blow
+        {!isBlown && isStarted && showManualBtn && (
+          <button className="force-blow-btn" onClick={triggerSequence}>
+            Manual Blow ✨
           </button>
         )}
       </div>
@@ -299,7 +307,7 @@ const App = () => {
         <div className="modal-backdrop">
           <div className="modal glass-card">
             <h3>Magical Moment Captured!</h3>
-            <p className="celebration-subtitle">You are always worth celebrating ✨</p>
+            <p className="celebration-subtitle">You are always celebrated and you deserve all the happiness in the world 💕</p>
             <img src={screenshot} className="screenshot-preview" alt="result" />
             <div className="modal-actions">
               <button className="btn-download" onClick={handleDownload}>Download Photo</button>
