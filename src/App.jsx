@@ -297,9 +297,7 @@ const App = () => {
           </div>
         )}
 
-        {isStarted && <div className="debug-overlay">
-          Pout: {debugInfo.ratio} | Sound: {debugInfo.sound} | Active
-        </div>}
+
 
         <div className={`overlay-status ${isBlowingDetected ? 'active' : isAlmostPouting ? 'almost' : ''}`}>
           {isBlowingDetected ? 'POOF!' : isAlmostPouting ? 'PUCKER UP!' : 'Make a wish, then blow until all the candles are out!'}
