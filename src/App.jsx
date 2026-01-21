@@ -3,6 +3,7 @@ import * as tf from '@tensorflow/tfjs';
 import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection';
 import '@tensorflow/tfjs-backend-webgl';
 import confetti from 'canvas-confetti';
+import html2canvas from 'html2canvas';
 import './App.css';
 
 const CANDLE_COUNT = 6;
@@ -21,6 +22,7 @@ const App = () => {
   const [isStarted, setIsStarted] = useState(false);
 
   const videoRef = useRef(null);
+  const containerRef = useRef(null);
   const detectorRef = useRef(null);
   const frameIdRef = useRef(null);
   const analyserRef = useRef(null);
@@ -186,71 +188,27 @@ const App = () => {
     }, 2500);
   };
 
-  const captureScreenshot = () => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 640; canvas.height = 480;
-    const ctx = canvas.getContext('2d');
+  const captureScreenshot = async () => {
+    if (!containerRef.current) return;
 
-    // 1. Draw mirrored video
-    ctx.translate(640, 0);
-    ctx.scale(-1, 1);
-    ctx.drawImage(videoRef.current, 0, 0);
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    try {
+      const canvas = await html2canvas(containerRef.current, {
+        useCORS: true,
+        scale: 2,
+        backgroundColor: null,
+        onclone: (clonedDoc) => {
+          const modal = clonedDoc.querySelector('.modal-backdrop');
+          if (modal) modal.style.display = 'none';
 
-    // 2. Decorative Overlay
-    ctx.fillStyle = 'rgba(255, 105, 180, 0.2)';
-    ctx.fillRect(0, 0, 640, 480);
+          const forceBtn = clonedDoc.querySelector('.force-blow-btn');
+          if (forceBtn) forceBtn.style.display = 'none';
+        }
+      });
 
-    // 3. DRAW THE CAKE onto the canvas
-    const cakeX = 320;
-    const cakeY = 470;
-    const s = 0.7;
-
-    // Bottom Layer
-    ctx.fillStyle = '#FF69B4';
-    ctx.beginPath();
-    ctx.roundRect(cakeX - (100 * s), cakeY - (60 * s), 200 * s, 60 * s, [15 * s, 15 * s, 0, 0]);
-    ctx.fill();
-
-    // Middle Layer
-    ctx.fillStyle = '#FFFFFF';
-    ctx.beginPath();
-    ctx.roundRect(cakeX - (80 * s), cakeY - (110 * s), 160 * s, 50 * s, [10 * s, 10 * s, 0, 0]);
-    ctx.fill();
-
-    // Icing Drips
-    ctx.fillStyle = '#FFFFFF';
-    [cakeX - (70 * s), cakeX - (40 * s), cakeX - (10 * s), cakeX + (20 * s), cakeX + (50 * s)].forEach((x, i) => {
-      const h = [20, 30, 15, 35, 25][i] * s;
-      ctx.beginPath(); ctx.arc(x, cakeY - (110 * s), 8 * s, 0, Math.PI * 2); ctx.fill();
-      ctx.fillRect(x - (8 * s), cakeY - (110 * s), 16 * s, h);
-      ctx.beginPath(); ctx.arc(x, cakeY - (110 * s) + h, 8 * s, 0, Math.PI * 2); ctx.fill();
-    });
-
-    // Top Layer
-    ctx.fillStyle = '#FFB6C1';
-    ctx.beginPath();
-    ctx.roundRect(cakeX - (60 * s), cakeY - (150 * s), 120 * s, 40 * s, [8 * s, 8 * s, 0, 0]);
-    ctx.fill();
-
-    // 4. DRAW CANDLES (Blown)
-    for (let i = 0; i < CANDLE_COUNT; i++) {
-      const cx = (cakeX - (55 * s)) + (i * (22 * s));
-      const cy = cakeY - (185 * s);
-
-      ctx.fillStyle = '#4A90E2';
-      ctx.beginPath(); ctx.roundRect(cx - (5 * s), cy, 10 * s, 40 * s, 5 * s); ctx.fill();
-
-      // Smoke
-      ctx.strokeStyle = 'rgba(200, 200, 200, 0.5)';
-      ctx.lineWidth = 3 * s; ctx.beginPath();
-      ctx.moveTo(cx, cy - (5 * s));
-      ctx.bezierCurveTo(cx + (5 * s), cy - (15 * s), cx - (5 * s), cy - (25 * s), cx, cy - (35 * s));
-      ctx.stroke();
+      setScreenshot(canvas.toDataURL('image/png'));
+    } catch (err) {
+      console.error("Screenshot failed:", err);
     }
-
-    // 5. FINISHED
-    setScreenshot(canvas.toDataURL('image/png'));
   };
 
   const handleDownload = () => {
@@ -265,7 +223,7 @@ const App = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container" ref={containerRef}>
       {/* Party Decorations */}
       {[...Array(6)].map((_, i) => (
         <div
