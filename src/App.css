@@ -287,7 +287,8 @@
 
 .celebration-subtitle {
   font-size: 1.1rem;
-  color: #666;
+  color: var(--pink-primary);
+  font-weight: 600;
   font-style: italic;
   margin-bottom: 1.5rem;
 }
