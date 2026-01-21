@@ -281,8 +281,15 @@
 
 .modal h3 {
   font-size: 2rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
   color: #333;
+}
+
+.celebration-subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  font-style: italic;
+  margin-bottom: 1.5rem;
 }
 
 .screenshot-preview {

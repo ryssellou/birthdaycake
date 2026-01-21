@@ -23,6 +23,7 @@ const App = () => {
 
   const videoRef = useRef(null);
   const containerRef = useRef(null);
+  const cameraFrameRef = useRef(null);
   const detectorRef = useRef(null);
   const frameIdRef = useRef(null);
   const analyserRef = useRef(null);
@@ -189,16 +190,20 @@ const App = () => {
   };
 
   const captureScreenshot = async () => {
-    if (!containerRef.current) return;
+    if (!cameraFrameRef.current) return;
 
     try {
-      const canvas = await html2canvas(containerRef.current, {
+      const canvas = await html2canvas(cameraFrameRef.current, {
         useCORS: true,
         scale: 2,
-        backgroundColor: null,
+        backgroundColor: '#000',
         onclone: (clonedDoc) => {
-          const modal = clonedDoc.querySelector('.modal-backdrop');
-          if (modal) modal.style.display = 'none';
+          // Hide instructions and overlays in the photo
+          const overlay = clonedDoc.querySelector('.overlay-status');
+          if (overlay) overlay.style.display = 'none';
+
+          const startOverlay = clonedDoc.querySelector('.start-overlay');
+          if (startOverlay) startOverlay.style.display = 'none';
 
           const forceBtn = clonedDoc.querySelector('.force-blow-btn');
           if (forceBtn) forceBtn.style.display = 'none';
@@ -243,7 +248,7 @@ const App = () => {
 
       <h1 className="title">{isBlown ? 'PARTY TIME!' : 'Happy Birthday! 🎂'}</h1>
 
-      <div className="camera-frame">
+      <div className="camera-frame" ref={cameraFrameRef}>
         <video ref={videoRef} className="camera-view" muted playsInline />
 
         {!isStarted && (
@@ -294,6 +299,7 @@ const App = () => {
         <div className="modal-backdrop">
           <div className="modal glass-card">
             <h3>Magical Moment Captured!</h3>
+            <p className="celebration-subtitle">You are always worth celebrating ✨</p>
             <img src={screenshot} className="screenshot-preview" alt="result" />
             <div className="modal-actions">
               <button className="btn-download" onClick={handleDownload}>Download Photo</button>
