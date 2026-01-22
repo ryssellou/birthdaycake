@@ -269,10 +269,16 @@ const App = () => {
         )}
 
 
+        {/* Party Filter Overlay */}
+        {isStarted && !isBlown && (
+          <div className="party-filter"></div>
+        )}
 
-        <div className={`overlay-status ${isBlowingDetected ? 'active' : isAlmostPouting ? 'almost' : ''}`}>
-          {isBlowingDetected ? 'POOF!' : isAlmostPouting ? 'PUCKER UP!' : 'Make a wish, then blow until all the candles are out!'}
-        </div>
+        {isStarted && (
+          <div className={`overlay-status ${isBlowingDetected ? 'active' : isAlmostPouting ? 'almost' : ''}`}>
+            {isBlowingDetected ? 'POOF!' : isAlmostPouting ? 'PUCKER UP!' : 'Make a wish, then blow until all the candles are out!'}
+          </div>
+        )}
 
         <div className="cake-overlay">
           <div className="cake">
@@ -305,7 +311,7 @@ const App = () => {
 
       {showModal && (
         <div className="modal-backdrop">
-          <div className="modal glass-card">
+          <div className="modal">
             <h3>Magical Moment Captured!</h3>
             <p className="celebration-subtitle">You are always celebrated and you deserve all the happiness in the world 💕</p>
             <img src={screenshot} className="screenshot-preview" alt="result" />
