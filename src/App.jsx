@@ -254,7 +254,7 @@ const App = () => {
         </div>
       ))}
 
-      <h1 className="title">{isBlown ? 'PARTY TIME!' : 'Happy Birthday! 🎂'}</h1>
+      <h1 className="title" style={{ opacity: isBlown ? 0 : 1, transition: 'opacity 0.3s' }}>Happy Birthday! 🎂</h1>
 
       <div className="camera-frame" ref={cameraFrameRef}>
         <video ref={videoRef} className="camera-view" muted playsInline />

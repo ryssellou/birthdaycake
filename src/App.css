@@ -53,8 +53,8 @@
 .camera-view {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  /* This removes black bars by filling the frame */
+  object-fit: contain;
+  /* Show full camera view without distortion */
   transform: scaleX(-1);
 }
 
@@ -375,20 +375,75 @@
 }
 
 @media (max-width: 600px) {
+  .container {
+    padding: 0.5rem;
+    gap: 0.75rem;
+  }
+
   .title {
-    font-size: 2.2rem;
+    font-size: 2rem;
+    padding: 0 5px;
+    margin-bottom: 0;
   }
 
   .camera-frame {
-    border-width: 6px;
-    width: 96%;
+    border-width: 3px;
+    width: 98%;
+    max-width: 100%;
+    border-radius: 15px;
+    /* Keep natural camera aspect ratio to prevent distortion */
+    aspect-ratio: 4/3;
   }
 
+  /* Reduce cake size significantly on mobile */
   .cake {
-    transform: scale(0.6);
+    transform: scale(0.45);
+    bottom: -30px;
+  }
+
+  /* Make the cake overlay sit lower so it doesn't cover the face */
+  .cake-overlay {
+    bottom: -30px;
+  }
+
+  /* Reduce status message size */
+  .overlay-status {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    top: 10px;
+    width: 90%;
+  }
+
+  /* Make manual blow button smaller and reposition */
+  .force-blow-btn {
+    bottom: 10px;
+    right: 10px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    border-radius: 15px;
+  }
+
+  /* Adjust modal for mobile */
+  .modal {
+    padding: 1.5rem;
+  }
+
+  .modal h3 {
+    font-size: 1.5rem;
+  }
+
+  .celebration-subtitle {
+    font-size: 0.95rem;
   }
 
   .btn-group {
     flex-direction: column;
+  }
+
+  .btn-main,
+  .btn-secondary,
+  .btn-download {
+    font-size: 0.95rem;
+    padding: 0.85rem;
   }
 }
